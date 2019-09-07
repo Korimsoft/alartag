@@ -1,6 +1,8 @@
+# WORK STILL IN PROGRESS
+
 This is a very small Linux utility aimed on a simple task.
 If you have a lot of imported music structured into directories
-...
+```
   -rootDirectory
     |- Author 1 -
     |  |- Song 1.mp3
@@ -17,7 +19,7 @@ If you have a lot of imported music structured into directories
     |- Some Anonymous Song.mp3
     |- Author 2
         | ...
-...
+```
 
 The script scans the children of the rootDirectory recursively for taggable music files (mp3/wma/FLAC/...). 
 * Directories at tje first level are used for Artist tag (Author 1, Author 2)
