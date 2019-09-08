@@ -3,6 +3,7 @@
 import sys
 import os
 import argparse
+import mutagen
 
 TAGGABLE_EXTENSIONS = {
     ".mp3",
@@ -30,24 +31,27 @@ def check_path(filePath):
     return os.path.exists(filePath) and os.path.isdir(filePath)
 
 
-def visitChild(childName, parentPath, author):
-    authorName = author or childName
+def visitChild(childName, parentPath, parentArtist):
+    artist = parentArtist or childName
     albumName = os.path.basename(parentPath)
     childPath =  os.path.join(parentPath, childName)   
 
     if os.path.isdir(childPath):
-        [visitChild(c, childPath, authorName) for c in os.listdir(childPath)]
+        [visitChild(c, childPath, artist) for c in os.listdir(childPath)]
     elif is_taggable(childPath):
-        add_tags(childPath, authorName, albumName)
+        add_tags(childPath, artist, albumName)
 
 def is_taggable(file):
     extension = os.path.splitext(file)
     return extension[-1] in TAGGABLE_EXTENSIONS
 
-def add_tags(file, author, album):
-    print(f"{file}: au: {author}, al:{album}")
-    #TODO: Here comes the tagging magic. Let's look for some library and use it wisely.
-
+def add_tags(filePath, artist, album):
+    #print(f"{filePath}: au: {artist}, al:{album}")
+    mediafile = mutagen.File(filePath, easy=True)
+    mediafile['album'] = album
+    mediafile['albumartist'] = artist
+    mediafile['artist'] = artist
+    print(f"{mediafile}")
 
 if __name__ == "__main__":
     main()

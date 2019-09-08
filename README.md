@@ -25,10 +25,11 @@ The script scans the children of the rootDirectory recursively for taggable musi
 * Directories at tje first level are used for Artist tag (Author 1, Author 2)
 * Directories on the last level are used as Album Name, for example Yet another song.ogg will be tagged with { Artist: Author 1, Album: Album 3}
 
+## Installation
 
 
 ## Usage
 Simply run the following command in the terminal and let the magic happen.
 ```shell
-./id3-auto-album-author --path <path-to-root-directory>
+music-titler --path <path-to-root-directory>
 ```
