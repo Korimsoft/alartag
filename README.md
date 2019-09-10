@@ -28,10 +28,18 @@ The script scans the children of the rootDirectory recursively for taggable musi
 * Directories on the last level are used as Album Name, for example Yet another song.ogg will be tagged with { Artist: Author 1, Album: Album 3}
 
 ## Installation
-
+Clone this repository. In terminal, cd to the root directory of the project and run
+```
+pip3 install .
+```
 
 ## Usage
-Simply run the following command in the terminal and let the magic happen.
-```shell
-music_titler --path <path-to-root-directory>
+After installation, simply run the following command in the terminal and let the magic happen.
+```
+alartag -path <path-to-root-directory>
+```
+
+To display help about the application usage, run
+```
+alartag -h
 ```
