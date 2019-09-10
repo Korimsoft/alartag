@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="music-titler",
-    version="0.0.1",
+    name="alartag",
+    version="0.0.2",
     author="Korimsoft",
     author_email="korimsoft@gmail.com",
     description="Automatic author/album tagging of music files",
@@ -18,5 +18,7 @@ setuptools.setup(
         "License :: MIT",
         "Operating System :: OS Independent",
     ],
+    scripts=['alartag.py'],
     python_requires='>=3.6',
+    install_requires='mutagen'
 )

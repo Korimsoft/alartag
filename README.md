@@ -1,6 +1,8 @@
 # WORK STILL IN PROGRESS
 
-This is a very small Linux utility aimed on a simple task.
+# Alartag
+
+This is a very small utility aimed on a simple task.
 If you have a lot of imported music structured into directories
 ```
   -rootDirectory
@@ -31,5 +33,5 @@ The script scans the children of the rootDirectory recursively for taggable musi
 ## Usage
 Simply run the following command in the terminal and let the magic happen.
 ```shell
-music-titler --path <path-to-root-directory>
+music_titler --path <path-to-root-directory>
 ```
