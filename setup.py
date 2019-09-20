@@ -19,6 +19,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     scripts=['alartag'],
-    python_requires='>=3.6',
+    python_requires='>=3.5',
     install_requires='mutagen'
 )

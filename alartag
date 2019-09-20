@@ -5,51 +5,86 @@ import os
 import argparse
 import mutagen
 
-TAGGABLE_EXTENSIONS = {
+# File extensions that are taken into consideration
+# for the tagging
+TAGGABLE_EXTENSIONS = (
     ".mp3",
     ".wma",
     ".flac",
     ".ogg"
-}
+)
 
-def main():
+
+def main() -> None:
     args = parse_args()
-    path = args.path
-    if not check_path(path):
-        print(f"Path {args.path} not valid. It either does not exist or it is not a directory.")
+    path = args.p
+    if not check_root_path(path):
+        print(
+            f"Path {args.path} not valid. It either does not exist or it is not a directory.")
         exit(1)
-    count_tagged = sum([visitChild(c, path, "") for c in os.listdir(path)])
-    print(f"{count_tagged} files tagged")
+    tagged_count = sum([visit_child(c, path, "") for c in os.listdir(path)])
+    print(f"{tagged_count} files tagged")
 
-def parse_args():
+
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Root directory')
-    parser.add_argument("-path", required=True)
+    parser.add_argument('-p', required=True)
     return parser.parse_args()
 
-def check_path(filePath):
-    return os.path.exists(filePath) and os.path.isdir(filePath)
 
-def visitChild(childName, parentPath, parentArtist):
-    artist = parentArtist or childName
-    albumName = os.path.basename(parentPath)
-    childPath =  os.path.join(parentPath, childName)   
+# Check if the root path exists and if it is a directory
+def check_root_path(file_path: str) -> bool:
+    return os.path.exists(file_path) and os.path.isdir(file_path)
 
-    if os.path.isdir(childPath):
-        return sum([visitChild(c, childPath, artist) for c in os.listdir(childPath)])
-    elif is_taggable(childPath):
-        add_tags(childPath, artist, albumName)
-        return 1
 
-def is_taggable(file):
-    extension = os.path.splitext(file)
+# Go through the directory structure recursively and tag taggable files
+def visit_child(child_name: str, parent_path: str, parent_artist: str) -> int:
+    artist = parent_artist or child_name
+    album_name = os.path.basename(parent_path)
+    child_path = os.path.join(parent_path, child_name)
+
+    if os.path.isdir(child_path):
+        return sum([visit_child(c, child_path, artist) for c in os.listdir(child_path)])
+    elif is_taggable(child_path):
+        return add_tags(child_path, artist, album_name)
+
+
+# Check if file is taggable
+def is_taggable(file_path: str):
+    extension = os.path.splitext(file_path)
     return extension[-1] in TAGGABLE_EXTENSIONS
 
-def add_tags(filePath, artist, album):
-    mediafile = mutagen.File(filePath, easy=True)
-    mediafile['album'] = album
-    mediafile['albumartist'] = artist
-    mediafile['artist'] = artist
-    mediafile.save()
+
+# Add the album and artist tags to the file
+def add_tags(file_path: str, artist: str, album: str) -> int:
+    try:
+        media_file = mutagen.File(file_path, easy=True)
+        if isinstance(media_file, mutagen.asf.ASF):
+            return add_asf(media_file, artist, album)
+        else:
+            return add_easy(media_file, artist, album)
+    except:
+            print(f"Unsupported file: {file_path}")
+            return 0
+
+
+# Add tags for ASF files (such as wma)
+def add_asf(media_file, artist: str, album: str) -> int:
+    media_file['Author'] = artist
+    media_file['WM/AlbumTitle'] = album
+    media_file['WM/AlbumArtist'] = artist
+    media_file.save()
+    return 1
+
+
+# Add tags in easy mode, works with mp3/FLAC
+def add_easy(media_file, artist: str, album: str) -> int:
+    media_file['album'] = album
+    media_file['albumartist'] = artist
+    media_file['artist'] = artist
+    media_file.save()
+    return 1
+
     
 if __name__ == "__main__":
     main()
